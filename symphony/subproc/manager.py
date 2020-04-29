@@ -64,7 +64,14 @@ class SubprocManager:
         for key, value in env.items():
             if not isinstance(value, str):
                 env[key] = str(value)
-        env.update(os.environ)
+        
+        #env.update(os.environ)
+        for key, value in os.environ.items():
+            # by jqxu, fix "CUDA_VISBLE_DEVICES" bug
+            if key in env:
+                assert key == "CUDA_VISIBLE_DEVICES", "key: {}, in os.environ: {}, and env: {}".format(key, value, env[key])
+            else:
+                env[key] = value  
 
         proc = subprocess.Popen(
             cmd,
